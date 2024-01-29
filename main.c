@@ -8,10 +8,14 @@
 
 #define N_MAX_DEFAULT 20;
 
+int on = 0;
+sigset_t sigmask, zeromask;
+
 void game_func (int msgsock, int random_num, int n_max);
 
 void catcher(int signo) {
     printf("Segnale ricevuto\n");
+    on = 1;
 }
 
 int main(int argc, char* argv[]) {
@@ -23,17 +27,13 @@ int main(int argc, char* argv[]) {
 
     // GESTIONE DEI SEGNALI AFFIDABILI
 
-    int pid;
-    struct sigaction sig, osig;
-    sigset_t sigmask, oldmask, zeromask;
-
+    struct sigaction sig;
     sig.sa_handler = catcher;
     sigemptyset(&sig.sa_mask);
-    sig.sa_flags = 0;
-    sigemptyset(&sigmask);
-    sigaddset(&sigmask, SIGUSR1);
-    sigprocmask(SIG_BLOCK, &sigmask, &oldmask);
-    sigaction(SIGUSR1, &sig, &osig);
+    sig.sa_flags = SA_RESTART;
+
+    sigaction(SIGUSR1, &sig, NULL);
+    sigaction(SIGUSR2, &sig, NULL);
 
     if (argc == 2) {
         n_max = atoi(argv[1]);
@@ -80,7 +80,6 @@ int main(int argc, char* argv[]) {
         else {
             if (fork() == 0) {
                 printf("PID: %d\n", getpid());
-                sigsuspend(&zeromask);
                 close(sock);
                 game_func(msgsock, random_num, n_max);
                 close(msgsock);
