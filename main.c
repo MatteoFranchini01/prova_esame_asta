@@ -8,14 +8,22 @@
 
 #define N_MAX_DEFAULT 20;
 
-int on = 0;
-sigset_t sigmask, zeromask;
+int client_num, random_num;
+int signal_1 = 0;
+int signal_2 = 0;
 
-void game_func (int msgsock, int random_num, int n_max);
+void game_func (int msgsock, int n_max);
 
 void catcher(int signo) {
-    printf("Segnale ricevuto\n");
-    on = 1;
+    printf("SERVER: segnale %d ricevuto\n", signo);
+
+    if (signo == SIGUSR1) {
+        signal_1 = 1;
+        random_num = abs(random_num - client_num);
+    }
+    else if (signo == SIGUSR2) {
+        signal_2 = 1;
+    }
 }
 
 int main(int argc, char* argv[]) {
@@ -23,7 +31,7 @@ int main(int argc, char* argv[]) {
     struct sockaddr_in server, client;
     int lenght;
     char line[256];
-    int n_max, random_num, client_num;
+    int n_max;
 
     // GESTIONE DEI SEGNALI AFFIDABILI
 
@@ -81,7 +89,7 @@ int main(int argc, char* argv[]) {
             if (fork() == 0) {
                 printf("PID: %d\n", getpid());
                 close(sock);
-                game_func(msgsock, random_num, n_max);
+                game_func(msgsock, n_max);
                 close(msgsock);
                 exit(0);
             }
@@ -93,28 +101,53 @@ int main(int argc, char* argv[]) {
     } while (1);
 }
 
-void game_func (int msgsock, int random_num, int n_max) {
+void game_func (int msgsock, int n_max) {
     char line[256];
-    int client_num;
 
     while(1) {
-        sprintf(line, "N_MAX: %d\n", n_max);
-        write(msgsock, line, strlen(line) + 1);
-        sprintf(line, "Inserire il numero vincente\n");
-        write(msgsock, line, strlen(line) + 1);
-        read(msgsock, line, sizeof(line));
-        sscanf(line, "%d", &client_num);
-        printf("SERVER: numero scelto: %d\n", client_num);
-
-        if (client_num == random_num) {
-            sprintf(line, "HAI VINTO!\n");
-            write(msgsock, line, strlen(line) + 1);
-            random_num = rand() % n_max + 1;
-            game_func(msgsock, random_num, n_max);
+        if (signal_1 == 1) {
+            if (random_num == 0) {
+                sprintf(line, "HAI VINTO!");
+                write(msgsock, line, strlen(line));
+            }
+            else {
+                sprintf(line, "NON HAI VINTO!");
+                write(msgsock, line, strlen(line));
+            }
+            printf("SERVER: chiusura...\n");
+            close(msgsock);
+            signal_1 = 0;
+            return;
+        }
+        else if (signal_2 == 1) {
+            sprintf(line, "Chiusura server...\n");
+            write(msgsock, line, strlen(line));
+            printf("SERVER: chiusura...\n");
+            close(msgsock);
+            signal_2 = 0;
+            return;
         }
         else {
-            sprintf(line, "RITENTA!\n");
+            sprintf(line, "N_MAX: %d\n", n_max);
             write(msgsock, line, strlen(line) + 1);
+            sprintf(line, "Inserire il numero vincente\n");
+            write(msgsock, line, strlen(line) + 1);
+            read(msgsock, line, sizeof(line));
+            sscanf(line, "%d", &client_num);
+            printf("SERVER: numero scelto: %d\n", client_num);
+
+            if (client_num == random_num) {
+                sprintf(line, "HAI VINTO!\n");
+                write(msgsock, line, strlen(line) + 1);
+                random_num = rand() % n_max + 1;
+                game_func(msgsock, n_max);
+            }
+            else {
+                sprintf(line, "RITENTA!\n");
+                write(msgsock, line, strlen(line) + 1);
+            }
+            sleep(10);
         }
+
     }
 }
