@@ -1,0 +1,3 @@
+/Users/matteofranchini/Library/CloudStorage/OneDrive-UniversitàdegliStudidiParma/Università/Appunti e slide/III anno/Sistemi Operativi/prova_esame_asta/cmake-build-debug/CMakeFiles/prova_esame_asta.dir
+/Users/matteofranchini/Library/CloudStorage/OneDrive-UniversitàdegliStudidiParma/Università/Appunti e slide/III anno/Sistemi Operativi/prova_esame_asta/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/matteofranchini/Library/CloudStorage/OneDrive-UniversitàdegliStudidiParma/Università/Appunti e slide/III anno/Sistemi Operativi/prova_esame_asta/cmake-build-debug/CMakeFiles/rebuild_cache.dir

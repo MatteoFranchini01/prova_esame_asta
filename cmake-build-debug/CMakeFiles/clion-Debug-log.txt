@@ -1,0 +1,10 @@
+/Users/matteofranchini/Applications/CLion.app/Contents/bin/cmake/mac/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Users/matteofranchini/Applications/CLion.app/Contents/bin/ninja/mac/x64/ninja -G Ninja -S "/Users/matteofranchini/Library/CloudStorage/OneDrive-UniversitàdegliStudidiParma/Università/Appunti e slide/III anno/Sistemi Operativi/prova_esame_asta" -B "/Users/matteofranchini/Library/CloudStorage/OneDrive-UniversitàdegliStudidiParma/Università/Appunti e slide/III anno/Sistemi Operativi/prova_esame_asta/cmake-build-debug"
+-- The C compiler identification is AppleClang 15.0.0.15000100
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /Library/Developer/CommandLineTools/usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Configuring done (3.1s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/matteofranchini/Library/CloudStorage/OneDrive-UniversitàdegliStudidiParma/Università/Appunti e slide/III anno/Sistemi Operativi/prova_esame_asta/cmake-build-debug
